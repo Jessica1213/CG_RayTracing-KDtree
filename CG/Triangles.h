@@ -58,25 +58,6 @@ public:
             return -1;
     }
     
-    BoundingBox getBoundingBox()
-    {
-        float minX, maxX, minY, maxY, minZ, maxZ;
-        maxX = MAX(points[0][0], MAX(points[1][0], points[2][0]));
-        minX = MIN(points[0][0], MIN(points[1][0], points[2][0]));
-        maxY = MAX(points[0][1], MAX(points[1][1], points[2][1]));
-        minY = MIN(points[0][1], MIN(points[1][1], points[2][1]));
-        maxZ = MAX(points[0][2], MAX(points[1][2], points[2][2]));
-        minZ = MIN(points[0][2], MIN(points[1][2], points[2][2]));
-            
-        vec3 leftupback(minX, maxY, minZ);
-        float length = maxX-minX;
-        float width = maxY-minY;
-        float height = maxZ-minZ;
-        BoundingBox bbox(leftupback, length, width, height);
-        return bbox;
-        
-    }
-
 };
 
 #endif /* Triangles_h */

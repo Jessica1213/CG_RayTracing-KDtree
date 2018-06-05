@@ -16,7 +16,7 @@
 int const OCTDIRECTION = 8;
 using namespace std;
 
-Sphere getBoundingBox(const vector<Triangle> &tri)
+Sphere getBoundingSphere(const vector<Triangle> &tri)
 {
 	vec3 centerpoint(0, 0, 0);
 	for (int i = 0; i < tri.size(); ++i) {
@@ -44,7 +44,7 @@ public:
     
     OctNode() {}
     
-    OctNode * bulid(vector<Triangle> &tris, int depth)
+    OctNode * build(vector<Triangle> &tris, int depth)
     {
 		//cout << "depth: " << depth << endl;
 		if (tris.size() == 0) return NULL;
@@ -57,7 +57,7 @@ public:
         }
         
 		// get a bounding box surrounding all the triangles
-		node->bbox = getBoundingBox(tris);
+		node->bbox = getBoundingSphere(tris);
 
 		if (tris.size() < 100) {
 			return node;
@@ -229,7 +229,7 @@ public:
 
         // recursive build tree
 		for (int i = 0; i < OCTDIRECTION; ++i) {
-			node->eightDirection[i] = bulid(alldirectionTree[i], depth + 1);
+			node->eightDirection[i] = build(alldirectionTree[i], depth + 1);
 		}
         
         return node;

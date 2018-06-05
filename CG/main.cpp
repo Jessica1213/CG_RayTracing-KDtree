@@ -237,7 +237,7 @@ int main()
     
     OctNode * mainTriangles = new OctNode();
 	cout << triangles.size() << endl;
-    mainTriangles = mainTriangles->bulid(triangles, 0);
+    mainTriangles = mainTriangles->build(triangles, 0);
 	cout << "Build finish time "<< float(clock() - begin_time) / CLOCKS_PER_SEC  << endl;
     // pixel color for height * width
     vector<vector<vec3>> color;
