@@ -1,0 +1,19 @@
+256*256
+Monkey
+My:
+Time difference = 74382521
+Time difference = 70055272
+
+Allen:
+Time difference = 72572855
+
+Bunny
+My:
+Time difference = 5580791033
+
+
+128*128
+Monkey
+Time difference = 17912716
+Bunny
+Time difference = 1462365670

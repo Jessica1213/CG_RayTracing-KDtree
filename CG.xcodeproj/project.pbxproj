@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4CAE5C59205EB79300078BEA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CAE5C58205EB79300078BEA /* main.cpp */; };
+		4C868406207E65EC00D73E65 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C868405207E65EC00D73E65 /* main.cpp */; };
+		4CAE5C61205EB7B000078BEA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CAE5C60205EB7B000078BEA /* OpenGL.framework */; };
+		4CAE5C63205EB7B500078BEA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CAE5C62205EB7B500078BEA /* GLUT.framework */; };
+		4CAE5C69205EB80400078BEA /* algebra3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CAE5C64205EB80400078BEA /* algebra3.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +26,25 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4C21FBF8209DB03700BFA72D /* Test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Test.txt; sourceTree = "<group>"; };
+		4C3D3590207A04CF009E0ED4 /* hw2_input.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hw2_input.txt; sourceTree = "<group>"; };
+		4C5250B8209CAD49003D8E22 /* BoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoundingBox.h; sourceTree = "<group>"; };
+		4C5250B9209CAD49003D8E22 /* Input_Bunny.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_Bunny.txt; sourceTree = "<group>"; };
+		4C5250BA209CAD49003D8E22 /* Input_Suzanne.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_Suzanne.txt; sourceTree = "<group>"; };
+		4C5250BB209CAD49003D8E22 /* Material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
+		4C5250BC209CAD49003D8E22 /* OctNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctNode.h; sourceTree = "<group>"; };
+		4C5250BD209CAD49003D8E22 /* Ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ray.h; sourceTree = "<group>"; };
+		4C5250BE209CAD49003D8E22 /* Spheres.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spheres.h; sourceTree = "<group>"; };
+		4C5250BF209CAD49003D8E22 /* Triangles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Triangles.h; sourceTree = "<group>"; };
+		4C868405207E65EC00D73E65 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		4CAE5C55205EB79300078BEA /* CG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CG; sourceTree = BUILT_PRODUCTS_DIR; };
-		4CAE5C58205EB79300078BEA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		4CAE5C60205EB7B000078BEA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		4CAE5C62205EB7B500078BEA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		4CAE5C64205EB80400078BEA /* algebra3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = algebra3.cpp; sourceTree = "<group>"; };
+		4CAE5C65205EB80400078BEA /* algebra3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = algebra3.h; sourceTree = "<group>"; };
+		4CAE5C66205EB80400078BEA /* hw1_input.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hw1_input.txt; sourceTree = "<group>"; };
+		4CAE5C67205EB80400078BEA /* imageIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageIO.h; sourceTree = "<group>"; };
+		4CB8F67120C3CCF30017870F /* KDNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDNode.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +52,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CAE5C63205EB7B500078BEA /* GLUT.framework in Frameworks */,
+				4CAE5C61205EB7B000078BEA /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +65,7 @@
 			children = (
 				4CAE5C57205EB79300078BEA /* CG */,
 				4CAE5C56205EB79300078BEA /* Products */,
+				4CAE5C5F205EB7B000078BEA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +80,33 @@
 		4CAE5C57205EB79300078BEA /* CG */ = {
 			isa = PBXGroup;
 			children = (
-				4CAE5C58205EB79300078BEA /* main.cpp */,
+				4CB8F67120C3CCF30017870F /* KDNode.h */,
+				4C21FBF8209DB03700BFA72D /* Test.txt */,
+				4C5250B8209CAD49003D8E22 /* BoundingBox.h */,
+				4C5250B9209CAD49003D8E22 /* Input_Bunny.txt */,
+				4C5250BA209CAD49003D8E22 /* Input_Suzanne.txt */,
+				4C5250BB209CAD49003D8E22 /* Material.h */,
+				4C5250BC209CAD49003D8E22 /* OctNode.h */,
+				4C5250BD209CAD49003D8E22 /* Ray.h */,
+				4C5250BE209CAD49003D8E22 /* Spheres.h */,
+				4C5250BF209CAD49003D8E22 /* Triangles.h */,
+				4C868405207E65EC00D73E65 /* main.cpp */,
+				4CAE5C64205EB80400078BEA /* algebra3.cpp */,
+				4CAE5C65205EB80400078BEA /* algebra3.h */,
+				4CAE5C66205EB80400078BEA /* hw1_input.txt */,
+				4C3D3590207A04CF009E0ED4 /* hw2_input.txt */,
+				4CAE5C67205EB80400078BEA /* imageIO.h */,
 			);
 			path = CG;
+			sourceTree = "<group>";
+		};
+		4CAE5C5F205EB7B000078BEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4CAE5C62205EB7B500078BEA /* GLUT.framework */,
+				4CAE5C60205EB7B000078BEA /* OpenGL.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +166,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CAE5C59205EB79300078BEA /* main.cpp in Sources */,
+				4C868406207E65EC00D73E65 /* main.cpp in Sources */,
+				4CAE5C69205EB80400078BEA /* algebra3.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +294,7 @@
 				4CAE5C5E205EB79300078BEA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
