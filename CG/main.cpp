@@ -31,24 +31,33 @@ void ClampColor(vec3 &color)
         color[i] = MAX(MIN(color[i], 1.0f), 0.0f);
 }
 
-Triangle * hit(OctNode*node, Ray &ray) {
+Triangle * hit(KDNode *node, Ray &ray) {
 	if (node == NULL)
 		return NULL;
 
 	float dis = node->bbox.isIntersect(ray);
 	if (dis > 0) {
 		vector<pair <float, int>> hitpair;
-		for (int i = 0; i < OCTDIRECTION; i++) {
-			if (node->eightDirection[i] != NULL) {
-				float dist = node->eightDirection[i]->bbox.isIntersect(ray);
-				if (node->eightDirection[i]->bbox.isInSphere(ray.o)) {
-					hitpair.push_back(make_pair(0.0f, i));
-				}
-				else if (dist > 0) {
-					hitpair.push_back(make_pair(dist, i));
-				}
-			}
-		}
+        if (node->left!=NULL) {
+            float dist = node->left->bbox.isIntersect(ray);
+            if (node->eightDirection[i]->bbox.isInSphere(ray.o)) {
+                hitpair.push_back(make_pair(0.0f, i));
+            }
+            else if (dist > 0) {
+                hitpair.push_back(make_pair(dist, i));
+            }
+        }
+		
+        if (node->right!=NULL) {
+            float dist = node->right->bbox.isIntersect(ray);
+            if (node->eightDirection[i]->bbox.isInSphere(ray.o)) {
+                hitpair.push_back(make_pair(0.0f, i));
+            }
+            else if (dist > 0) {
+                hitpair.push_back(make_pair(dist, i));
+            }
+        }
+        
 		// leaf node
 		if (hitpair.size() == 0) {
 			float distance = 1e9;
@@ -64,10 +73,11 @@ Triangle * hit(OctNode*node, Ray &ray) {
 		}
 		else {
 			sort(begin(hitpair), end(hitpair));
-
+            
 			for (int i = 0; i < hitpair.size(); i++) {
 				int index = hitpair[i].second;
-				Triangle * result = hit(node->eightDirection[index], ray);
+				Triangle * result = hit(node->left, ray);
+                Triangle * result2 = hit(node->right, ray);
 				if (result) {
 					return result;
 				}
@@ -78,7 +88,7 @@ Triangle * hit(OctNode*node, Ray &ray) {
 	return NULL;
 }
 
-vec3 RayTracing(OctNode *node, Ray &ray, vector<Material> &materials, vec3 &lightpos, vec3 &lightColor, int depth)
+vec3 RayTracing(KDNode *node, Ray &ray, vector<Material> &materials, vec3 &lightpos, vec3 &lightColor, int depth)
 {
     vec3 backgroundColor(0,0,0);
     if (depth == 0) return backgroundColor;
@@ -235,7 +245,7 @@ int main()
     vec3 downLeft(screenCenter - xAxis.normalize()*halfScreenX + yAxis.normalize()*halfScreenY);
     vec3 downRight(screenCenter + xAxis.normalize()*halfScreenX + yAxis.normalize()*halfScreenY);
     
-    OctNode * mainTriangles = new OctNode();
+    KDNode * mainTriangles = new KDNode();
 	cout << triangles.size() << endl;
     mainTriangles = mainTriangles->build(triangles, 0);
 	cout << "Build finish time "<< float(clock() - begin_time) / CLOCKS_PER_SEC  << endl;

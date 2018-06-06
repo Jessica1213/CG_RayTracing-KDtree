@@ -30,14 +30,10 @@ public:
         else if(width>length && width>height)  return 1;
         else return 2;
     }
-//
-//    bool hit(Ray ray)
-//    {
-//        if(ray.d[0] >= min[0] && ray.d[0] <= max[0] && ray.d[1] >= min[1] && ray.d[1] <= max[1]) {
-//            return true;
-//        }
-//        return false;
-//    }
+    
+    bool isIntersect(Ray ray) {
+        return true;
+    }
 };
 
 
