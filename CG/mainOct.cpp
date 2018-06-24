@@ -18,9 +18,7 @@
 #include "Material.h"
 #include "Spheres.h"
 #include "Triangles.h"
-#include "BoundingBox.h"
 #include "OctNode.h"
-#include "KDNode.h"
 #include <time.h>
 #include <stdlib.h>
 using namespace std;
@@ -31,44 +29,31 @@ void ClampColor(vec3 &color)
         color[i] = MAX(MIN(color[i], 1.0f), 0.0f);
 }
 
-Triangle * hit(KDNode *node, Ray &ray, int dep) {
-    if (node == NULL)
+Triangle * hit(OctNode*node, Ray &ray) {
+	if (node == NULL)
 		return NULL;
-    
-    float d = node->bbox.isIntersect(ray);
-	if (d > 0)
-    {
-        bool hitright = false;
-        bool hitleft = false;
-        float distleft = 1e9, distright = 1e9;
-        if (node->left != NULL) {
-            float dist = node->left->bbox.isIntersect(ray);
-            if (dist > 0) {
-                hitleft = true;
-//                cout << "left " << endl;
-                distleft = dist;
-            }
-        }
-		
-        if (node->right != NULL) {
-            float dist = node->right->bbox.isIntersect(ray);
-            if (dist > 0) {
-                hitright = true;
-//                cout << "right " << endl;
-                distright = dist;
-            }
-        }
-        
+
+	float dis = node->bbox.isIntersect(ray);
+	if (dis > 0) {
+		vector<pair <float, int>> hitpair;
+		for (int i = 0; i < OCTDIRECTION; i++) {
+			if (node->eightDirection[i] != NULL) {
+				float dist = node->eightDirection[i]->bbox.isIntersect(ray);
+				if (node->eightDirection[i]->bbox.isInSphere(ray.o)) {
+					hitpair.push_back(make_pair(0.0f, i));
+				}
+				else if (dist > 0) {
+					hitpair.push_back(make_pair(dist, i));
+				}
+			}
+		}
 		// leaf node
-		if (hitleft==false && hitright==false) {
-//            cout << "leaf node" << endl;
+		if (hitpair.size() == 0) {
 			float distance = 1e9;
 			Triangle * nearestTriangle = NULL;
-            cout << "dep: " << dep << " ==== size:" << node->triangles.size() << endl;
 			for (int j = 0; j < node->triangles.size(); j++) {
 				float dist = node->triangles[j].isIntersect(ray);
 				if (dist > 0 && dist < distance) {
-                    cout << "found" << endl;
 					nearestTriangle = &(node->triangles[j]);
 					distance = dist;
 				}
@@ -76,20 +61,22 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
 			return nearestTriangle;
 		}
 		else {
-            if(hitleft==true && (distleft < distright)) {
-                Triangle * result = hit(node->left, ray, dep+1);
-                if(result) return result;
-            }
-            if(hitright==true && (distright < distleft)){
-                Triangle * result = hit(node->right, ray, dep+1);
-                if(result) return result;
-            }
+			sort(begin(hitpair), end(hitpair));
+
+			for (int i = 0; i < hitpair.size(); i++) {
+				int index = hitpair[i].second;
+				Triangle * result = hit(node->eightDirection[index], ray);
+				if (result) {
+					return result;
+				}
+			}
 		}
 	}
+
 	return NULL;
 }
 
-vec3 RayTracing(KDNode *node, Ray &ray, vector<Material> &materials, vec3 &lightpos, vec3 &lightColor, int depth)
+vec3 RayTracing(OctNode *node, Ray &ray, vector<Material> &materials, vec3 &lightpos, vec3 &lightColor, int depth)
 {
     vec3 backgroundColor(0,0,0);
     if (depth == 0) return backgroundColor;
@@ -97,8 +84,8 @@ vec3 RayTracing(KDNode *node, Ray &ray, vector<Material> &materials, vec3 &light
     vec3 color(0, 0, 0);    
     vec3 intersectPoint, normal;
     int materialindex = 0;
-    int dep = 0;
-	Triangle * nearestTriangle = hit(node, ray, dep);
+
+	Triangle * nearestTriangle = hit(node, ray);
 	// No intersect
 	if (nearestTriangle == NULL) {
 		return backgroundColor;
@@ -116,19 +103,19 @@ vec3 RayTracing(KDNode *node, Ray &ray, vector<Material> &materials, vec3 &light
   		
 	Ray towardLight(intersectPoint + normal*1e-5, (lightpos - intersectPoint).normalize());
     
-//    Triangle * block = hit(node, towardLight);
+    Triangle * block = hit(node, towardLight);
 	Material material = materials[materialindex];
     
     color += material.coef[0] * lightColor;
     
-//    if (block==NULL) {
+    if (block==NULL) {
         // diffuse component  => kd*(li* (N dot L))
         color += material.coef[1] * lightColor * (normal * towardLight.d);
         // specular component  => ks*(li*((N dot H) ^ exp), H=L+V
         vec3 h = (towardLight.d - ray.d).normalize();
         double exp = material.exp;
         color += material.coef[2] * lightColor * pow((normal*h), exp);
-//    }
+    }
 
 
 	color[0] *= material.rgb[0];
@@ -166,8 +153,7 @@ int main()
     vector<Material> materials;
     
     // Read from file
-    ifstream file ("triangle.txt");
-//    ifstream file ("Input_Suzanne.txt");
+    ifstream file ("Input_Suzanne.txt");
 //    ifstream file ("Input_Bunny.txt");
     if(file.is_open())
     {
@@ -247,9 +233,9 @@ int main()
     vec3 downLeft(screenCenter - xAxis.normalize()*halfScreenX + yAxis.normalize()*halfScreenY);
     vec3 downRight(screenCenter + xAxis.normalize()*halfScreenX + yAxis.normalize()*halfScreenY);
     
-    KDNode * mainTriangles = new KDNode();
-	cout << "===" << triangles.size() <<  "===" << endl;
-    mainTriangles = mainTriangles->build(triangles, 0);
+    OctNode * mainTriangles = new OctNode();
+	cout << triangles.size() << endl;
+    mainTriangles = mainTriangles->bulid(triangles, 0);
 	cout << "Build finish time "<< float(clock() - begin_time) / CLOCKS_PER_SEC  << endl;
     // pixel color for height * width
     vector<vector<vec3>> color;
@@ -286,8 +272,8 @@ int main()
         }
     }
     
-//    image.outputPPM("KDtree bunny shadow 256.ppm");
-    image.outputPPM("KDtree monkey shadow 256.ppm");
+//    image.outputPPM("octree bunny shadow 256.ppm");
+    image.outputPPM("octree monkey shadow 128.ppm");
     std::cout << float(clock() - begin_time) / CLOCKS_PER_SEC << endl;
 //    system("pause");
 	return 0;
