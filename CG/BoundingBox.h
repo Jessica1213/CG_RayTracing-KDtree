@@ -13,19 +13,20 @@
 
 class BoundingBox {
 public:
-    vec3 leftdownback;
+    vec3 minpoint;
+    vec3 maxpoint;
     vec3 centerpoint;
-    float length;
-    float width;
-    float height;
     
     BoundingBox (){}
-    BoundingBox (vec3 ldb, vec3 center, float l, float w, float h) : leftdownback(ldb), centerpoint(center), length(l), width(w), height(h) {}
+    BoundingBox (vec3 minp, vec3 maxp, vec3 center) : minpoint(minp), maxpoint(maxp), centerpoint(center) {}
     
     vec3 getCenter() { return centerpoint; }
     
     int getLongestAxis()
     {
+        float length = maxpoint[0]-minpoint[0];
+        float width = maxpoint[1]-minpoint[1];
+        float height = maxpoint[2]-minpoint[2];
         if(length>width && length>height) return 0;
         else if(width>length && width>height)  return 1;
         else return 2;
@@ -33,126 +34,92 @@ public:
     
     float isIntersect(Ray ray) {
         // x axis
-        float mint = 1e9;
-        int index = 0;
+        float mindis = 1e9;
         bool hit = false;
-        float x = leftdownback[0];
+    
+        float x = minpoint[0];
         float t = (x-ray.o[0])/ray.d[0];
         float y = ray.o[1] + t * ray.d[1];
         float z = ray.o[2] + t * ray.d[2];
-        if (y >= leftdownback[1] && y <= (leftdownback[1]+width) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) {
-                mint = t;
-                index = 1;
-            }
+        if (y >= minpoint[1] && y <= maxpoint[1] && z >= minpoint[2] && z <= maxpoint[2]) {
             hit = true;
+            vec3 hitpoint(x, y, z);
+            float dis = (hitpoint-ray.o).length();
+            if (dis < mindis) {
+                mindis = dis;
+            }
         }
         
-        x = leftdownback[0]+length;
+        x = maxpoint[0];
         t = (x-ray.o[0])/ray.d[0];
         y = ray.o[1] + t * ray.d[1];
         z = ray.o[2] + t * ray.d[2];
-        if (y >= leftdownback[1] && y <= (leftdownback[1]+width) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) {
-                mint = t;
-                index = 2;
-            }
+        if (y >= minpoint[1] && y <= maxpoint[1] && z >= minpoint[2] && z <= maxpoint[2]) {
             hit = true;
+            vec3 hitpoint(x, y, z);
+            float dis = (hitpoint-ray.o).length();
+            if (dis < mindis) {
+                mindis = dis;
+            }
         }
+        
+        
         // y axis
-        y = leftdownback[1];
-        t = (y-ray.o[1])/ray.d[1];
+        y = minpoint[1];
+        t = (x-ray.o[0])/ray.d[0];
         x = ray.o[0] + t * ray.d[0];
         z = ray.o[2] + t * ray.d[2];
-        if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) {
-                mint = t;
-                index = 3;
-            }
+        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[2] && z <= maxpoint[2]) {
             hit = true;
+            vec3 hitpoint(x, y, z);
+            float dis = (hitpoint-ray.o).length();
+            if (dis < mindis) {
+                mindis = dis;
+            }
         }
 
-        y = leftdownback[1]+width;
-        t = (y-ray.o[1])/ray.d[1];
+        y = maxpoint[1];
+        t = (x-ray.o[0])/ray.d[0];
         x = ray.o[0] + t * ray.d[0];
         z = ray.o[2] + t * ray.d[2];
-        if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) {
-                mint = t;
-                index = 4;
-            }
+        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[2] && z <= maxpoint[2]) {
             hit = true;
+            vec3 hitpoint(x, y, z);
+            float dis = (hitpoint-ray.o).length();
+            if (dis < mindis) {
+                mindis = dis;
+            }
         }
         
         // z axis
-        z = leftdownback[2];
-        t = (z-ray.o[2])/ray.d[2];
+        z = minpoint[2];
+        t = (x-ray.o[0])/ray.d[0];
         x = ray.o[0] + t * ray.d[0];
         y = ray.o[1] + t * ray.d[1];
-        if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && y >= leftdownback[1] && y <= (leftdownback[1]+width)) {
-            if (t < mint) {
-                mint = t;
-                index = 5;
-            }
+        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[1] && z <= maxpoint[1]) {
             hit = true;
+            vec3 hitpoint(x, y, z);
+            float dis = (hitpoint-ray.o).length();
+            if (dis < mindis) {
+                mindis = dis;
+            }
         }
         
-        z = leftdownback[2]+height;
-        t = (z-ray.o[2])/ray.d[2];
+        z = maxpoint[2];
+        t = (x-ray.o[0])/ray.d[0];
         x = ray.o[0] + t * ray.d[0];
         y = ray.o[1] + t * ray.d[1];
-        if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && y >= leftdownback[1] && y <= (leftdownback[1]+width)) {
-            if (t < mint) {
-                mint = t;
-                index = 6;
-            }
+        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[1] && z <= maxpoint[1]) {
             hit = true;
-        }
-        if(hit==true) {
-            switch (index) {
-                case 1:
-                    x = leftdownback[0];
-                    t = (x-ray.o[0])/ray.d[0];
-                    y = ray.o[1] + t * ray.d[1];
-                    z = ray.o[2] + t * ray.d[2];
-                break;
-                case 2:
-                    x = leftdownback[0]+length;
-                    t = (x-ray.o[0])/ray.d[0];
-                    y = ray.o[1] + t * ray.d[1];
-                    z = ray.o[2] + t * ray.d[2];
-                break;
-                case 3:
-                    y = leftdownback[1];
-                    t = (y-ray.o[1])/ray.d[1];
-                    x = ray.o[0] + t * ray.d[0];
-                    z = ray.o[2] + t * ray.d[2];
-                break;
-                case 4:
-                    y = leftdownback[1]+width;
-                    t = (y-ray.o[1])/ray.d[1];
-                    x = ray.o[0] + t * ray.d[0];
-                    z = ray.o[2] + t * ray.d[2];
-                break;
-                case 5:
-                    z = leftdownback[2];
-                    t = (z-ray.o[2])/ray.d[2];
-                    x = ray.o[0] + t * ray.d[0];
-                    y = ray.o[1] + t * ray.d[1];
-                break;
-                case 6:
-                    z = leftdownback[2]+height;
-                    t = (z-ray.o[2])/ray.d[2];
-                    x = ray.o[0] + t * ray.d[0];
-                    y = ray.o[1] + t * ray.d[1];
-                    break;
-                default:
-                    break;
+            vec3 hitpoint(x, y, z);
+            float dis = (hitpoint-ray.o).length();
+            if (dis < mindis) {
+                mindis = dis;
             }
-            vec3 crosspoint(x, y, z);
-            return (crosspoint-ray.o).length();
+            
         }
-        
+        std::cout << hit << std::endl;
+        if(hit) return mindis;
         else return -1;
     }
 };

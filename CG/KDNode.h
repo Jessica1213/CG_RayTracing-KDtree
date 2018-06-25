@@ -34,11 +34,9 @@ BoundingBox getBoundingBox(vector<Triangle> &tri)
     }
     centerpoint /= tri.size();
     
-    vec3 leftdownback(minX, minY, minZ);
-    float length = maxX-minX;
-    float width = maxY-minY;
-    float height = maxZ-minZ;
-    BoundingBox bbox(leftdownback, centerpoint, length, width, height);
+    vec3 minp(minX, minY, minZ);
+    vec3 maxp(maxX, maxY, maxZ);
+    BoundingBox bbox(minp, maxp, centerpoint);
     return bbox;
 }
 
@@ -91,10 +89,7 @@ public:
         }
 
         // recursive build tree
-        if (rightTree.size() == node->triangles.size()){
-            return node;
-        }
-        else if(leftTree.size() == node->triangles.size()) {
+        if (rightTree.size() == node->triangles.size() ||  leftTree.size() == node->triangles.size()){
             return node;
         }
         else {
