@@ -13,6 +13,8 @@
 #ifndef KDNode_h
 #define KDNode_h
 
+int const CHILDNUM = 2;
+
 BoundingBox getBoundingBox(vector<Triangle> &tri)
 {
     vec3 centerpoint(0, 0, 0);
@@ -44,8 +46,7 @@ BoundingBox getBoundingBox(vector<Triangle> &tri)
 class KDNode {
 public:
     BoundingBox bbox;
-    KDNode * left;
-    KDNode * right;
+    KDNode * child[2];
     vector<Triangle> triangles;
     
     KDNode() {}
@@ -55,13 +56,14 @@ public:
 
         KDNode * node  = new KDNode();
         node->triangles = tris;
-        node->left = NULL;
-        node->right = NULL;
+        
+        node->child[0] = NULL;
+        node->child[1] = NULL;
         std::cout << depth << " ===== " << node->triangles.size() << " --- " <<node->bbox.getLongestAxis() << std::endl;
         // get a bounding box surrounding all the triangles
         node->bbox = getBoundingBox(tris);
         
-        if (node->triangles.size() < 500) {            
+        if (node->triangles.size() <= 100) {
             std::cout << node->triangles.size() << std::endl;
             return node;
         }
@@ -72,19 +74,33 @@ public:
         vec3 centerpoint = node->bbox.getCenter();
         
         int axis = node->bbox.getLongestAxis();
-        for (int i=0; i<tris.size(); i++) {
-            if (centerpoint[axis] >= tris[i].center[axis]) {
-                leftTree.push_back(tris[i]);
+        
+        for (int i = 0; i < tris.size(); ++i) {
+            for (int j = 0; j < 3; j++) {
+                if (tris[i].points[j][axis] <= centerpoint[axis]) {
+                    leftTree.push_back(tris[i]);
+                    break;
+                }
             }
-            else if (centerpoint[axis] <= tris[i].center[axis]) {
-                rightTree.push_back(tris[i]);
+            for (int j = 0; j < 3; j++) {
+                if(tris[i].points[j][axis] >= centerpoint[axis]) {
+                    rightTree.push_back(tris[i]);
+                    break;
+                }
             }
-            
         }
 
         // recursive build tree
-        node->left = build(leftTree, depth + 1);
-        node->right = build(rightTree, depth + 1);
+        if (rightTree.size() == node->triangles.size()){
+            return node;
+        }
+        else if(leftTree.size() == node->triangles.size()) {
+            return node;
+        }
+        else {
+            node->child[0] = build(leftTree, depth + 1);
+            node->child[1] = build(rightTree, depth + 1);
+        }
         return node;
             
     }

@@ -38,67 +38,41 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
     float d = node->bbox.isIntersect(ray);
 	if (d > 0)
     {
-        bool hitright = false;
-        bool hitleft = false;
-        float distleft = 1e9, distright = 1e9;
-
-        if (node->right != NULL) {
-            float dist = node->right->bbox.isIntersect(ray);
-            if (dist > 0) {
-                hitright = true;
-                distright = dist;
-            }
-        }
-        
-        if (node->left  != NULL) {
-            float dist = node->left->bbox.isIntersect(ray);
-            if (dist > 0) {
-                hitleft = true;
-                distleft = dist;
-            }
-        }
-        
-		// leaf node
-		if (!hitleft && !hitright) {
-			float distance = 1e9;
-			Triangle * nearestTriangle = NULL;
-            cout << "dep: " << dep << " ==== size:" << node->triangles.size() << endl;
-			for (int j = 0; j < node->triangles.size(); j++) {
-				float dist = node->triangles[j].isIntersect(ray);
-				if (dist > 0 && dist < distance) {
-                    cout << "found" << endl;
-					nearestTriangle = &(node->triangles[j]);
-					distance = dist;
-				}
-			}
-			return nearestTriangle;
-		}
-		else {
-            
-            if(hitleft && hitright){
-                if (distleft >= distright) {
-                    Triangle * result = hit(node->right, ray, dep+1);
-                    if(result!=NULL) return result;
-                    else return result = hit(node->left, ray, dep+1);
-                }
-                else {
-                    Triangle * result = hit(node->left, ray, dep+1);
-                    if(result!=NULL) return result;
-                    else return result = hit(node->right, ray, dep+1);
-                    
+        vector<pair <float, int>> hitpair;
+        for (int i = 0; i < CHILDNUM; i++) {
+            if (node->child[i] != NULL) {
+                float dist = node->child[i]->bbox.isIntersect(ray);
+                if (dist > 0) {
+                    hitpair.push_back(make_pair(dist, i));
                 }
             }
-            if (hitright && !hitleft){
-                Triangle * result = hit(node->right, ray, dep+1);
-                return result;
+        }
+        // leaf node
+        if (hitpair.size() == 0) {
+            float distance = 1e9;
+            Triangle * nearestTriangle = NULL;
+            for (int j = 0; j < node->triangles.size(); j++) {
+                float dist = node->triangles[j].isIntersect(ray);
+                if (dist > 0 && dist < distance) {
+                    nearestTriangle = &(node->triangles[j]);
+                    distance = dist;
+                }
+            }
+            return nearestTriangle;
+        }
+        else {
+            if(hitpair.size() > 1) {
+                sort(begin(hitpair), end(hitpair));
             }
             
-            if (hitleft && !hitright){
-                Triangle * result = hit(node->left, ray, dep+1);
-                return result;
+            for (int i = 0; i < hitpair.size(); i++) {
+                int index = hitpair[i].second;
+                Triangle * result = hit(node->child[index], ray, dep+1);
+                if (result) {
+                    return result;
+                }
             }
-            
-		}
+        }
 	}
 	return NULL;
 }
