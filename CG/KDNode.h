@@ -57,11 +57,11 @@ public:
         node->triangles = tris;
         node->left = NULL;
         node->right = NULL;
-        std::cout << depth << " ===== " << node->triangles.size() << std::endl;
+        std::cout << depth << " ===== " << node->triangles.size() << " --- " <<node->bbox.getLongestAxis() << std::endl;
         // get a bounding box surrounding all the triangles
         node->bbox = getBoundingBox(tris);
-
-        if (node->triangles.size() < 50) {
+        
+        if (node->triangles.size() < 500) {            
             std::cout << node->triangles.size() << std::endl;
             return node;
         }
@@ -76,7 +76,10 @@ public:
             if (centerpoint[axis] >= tris[i].center[axis]) {
                 leftTree.push_back(tris[i]);
             }
-            else rightTree.push_back(tris[i]);
+            else if (centerpoint[axis] <= tris[i].center[axis]) {
+                rightTree.push_back(tris[i]);
+            }
+            
         }
 
         // recursive build tree

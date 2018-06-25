@@ -34,13 +34,17 @@ public:
     float isIntersect(Ray ray) {
         // x axis
         float mint = 1e9;
+        int index = 0;
         bool hit = false;
         float x = leftdownback[0];
         float t = (x-ray.o[0])/ray.d[0];
         float y = ray.o[1] + t * ray.d[1];
         float z = ray.o[2] + t * ray.d[2];
         if (y >= leftdownback[1] && y <= (leftdownback[1]+width) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) mint = t;
+            if (t < mint) {
+                mint = t;
+                index = 1;
+            }
             hit = true;
         }
         
@@ -49,7 +53,10 @@ public:
         y = ray.o[1] + t * ray.d[1];
         z = ray.o[2] + t * ray.d[2];
         if (y >= leftdownback[1] && y <= (leftdownback[1]+width) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) mint = t;
+            if (t < mint) {
+                mint = t;
+                index = 2;
+            }
             hit = true;
         }
         // y axis
@@ -58,7 +65,10 @@ public:
         x = ray.o[0] + t * ray.d[0];
         z = ray.o[2] + t * ray.d[2];
         if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) mint = t;
+            if (t < mint) {
+                mint = t;
+                index = 3;
+            }
             hit = true;
         }
 
@@ -67,7 +77,10 @@ public:
         x = ray.o[0] + t * ray.d[0];
         z = ray.o[2] + t * ray.d[2];
         if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && z >= leftdownback[2] && z <= (leftdownback[2]+height)) {
-            if (t < mint) mint = t;
+            if (t < mint) {
+                mint = t;
+                index = 4;
+            }
             hit = true;
         }
         
@@ -77,7 +90,10 @@ public:
         x = ray.o[0] + t * ray.d[0];
         y = ray.o[1] + t * ray.d[1];
         if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && y >= leftdownback[1] && y <= (leftdownback[1]+width)) {
-            if (t < mint) mint = t;
+            if (t < mint) {
+                mint = t;
+                index = 5;
+            }
             hit = true;
         }
         
@@ -86,10 +102,57 @@ public:
         x = ray.o[0] + t * ray.d[0];
         y = ray.o[1] + t * ray.d[1];
         if (x >= leftdownback[0] && x <= (leftdownback[0]+length) && y >= leftdownback[1] && y <= (leftdownback[1]+width)) {
-            if (t < mint) mint = t;
+            if (t < mint) {
+                mint = t;
+                index = 6;
+            }
             hit = true;
         }
-        if(hit==true) return mint;
+        if(hit==true) {
+            switch (index) {
+                case 1:
+                    x = leftdownback[0];
+                    t = (x-ray.o[0])/ray.d[0];
+                    y = ray.o[1] + t * ray.d[1];
+                    z = ray.o[2] + t * ray.d[2];
+                break;
+                case 2:
+                    x = leftdownback[0]+length;
+                    t = (x-ray.o[0])/ray.d[0];
+                    y = ray.o[1] + t * ray.d[1];
+                    z = ray.o[2] + t * ray.d[2];
+                break;
+                case 3:
+                    y = leftdownback[1];
+                    t = (y-ray.o[1])/ray.d[1];
+                    x = ray.o[0] + t * ray.d[0];
+                    z = ray.o[2] + t * ray.d[2];
+                break;
+                case 4:
+                    y = leftdownback[1]+width;
+                    t = (y-ray.o[1])/ray.d[1];
+                    x = ray.o[0] + t * ray.d[0];
+                    z = ray.o[2] + t * ray.d[2];
+                break;
+                case 5:
+                    z = leftdownback[2];
+                    t = (z-ray.o[2])/ray.d[2];
+                    x = ray.o[0] + t * ray.d[0];
+                    y = ray.o[1] + t * ray.d[1];
+                break;
+                case 6:
+                    z = leftdownback[2]+height;
+                    t = (z-ray.o[2])/ray.d[2];
+                    x = ray.o[0] + t * ray.d[0];
+                    y = ray.o[1] + t * ray.d[1];
+                    break;
+                default:
+                    break;
+            }
+            vec3 crosspoint(x, y, z);
+            return (crosspoint-ray.o).length();
+        }
+        
         else return -1;
     }
 };

@@ -41,27 +41,25 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
         bool hitright = false;
         bool hitleft = false;
         float distleft = 1e9, distright = 1e9;
-        if (node->left != NULL) {
-            float dist = node->left->bbox.isIntersect(ray);
-            if (dist > 0) {
-                hitleft = true;
-//                cout << "left " << endl;
-                distleft = dist;
-            }
-        }
-		
+
         if (node->right != NULL) {
             float dist = node->right->bbox.isIntersect(ray);
             if (dist > 0) {
                 hitright = true;
-//                cout << "right " << endl;
                 distright = dist;
             }
         }
         
+        if (node->left  != NULL) {
+            float dist = node->left->bbox.isIntersect(ray);
+            if (dist > 0) {
+                hitleft = true;
+                distleft = dist;
+            }
+        }
+        
 		// leaf node
-		if (hitleft==false && hitright==false) {
-//            cout << "leaf node" << endl;
+		if (!hitleft && !hitright) {
 			float distance = 1e9;
 			Triangle * nearestTriangle = NULL;
             cout << "dep: " << dep << " ==== size:" << node->triangles.size() << endl;
@@ -76,14 +74,30 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
 			return nearestTriangle;
 		}
 		else {
-            if(hitleft==true && (distleft < distright)) {
-                Triangle * result = hit(node->left, ray, dep+1);
-                if(result) return result;
+            
+            if(hitleft && hitright){
+                if (distleft >= distright) {
+                    Triangle * result = hit(node->right, ray, dep+1);
+                    if(result!=NULL) return result;
+                    else return result = hit(node->left, ray, dep+1);
+                }
+                else {
+                    Triangle * result = hit(node->left, ray, dep+1);
+                    if(result!=NULL) return result;
+                    else return result = hit(node->right, ray, dep+1);
+                    
+                }
             }
-            if(hitright==true && (distright < distleft)){
+            if (hitright && !hitleft){
                 Triangle * result = hit(node->right, ray, dep+1);
-                if(result) return result;
+                return result;
             }
+            
+            if (hitleft && !hitright){
+                Triangle * result = hit(node->left, ray, dep+1);
+                return result;
+            }
+            
 		}
 	}
 	return NULL;
@@ -116,19 +130,19 @@ vec3 RayTracing(KDNode *node, Ray &ray, vector<Material> &materials, vec3 &light
   		
 	Ray towardLight(intersectPoint + normal*1e-5, (lightpos - intersectPoint).normalize());
     
-//    Triangle * block = hit(node, towardLight);
+    Triangle * block = hit(node, towardLight, dep);
 	Material material = materials[materialindex];
     
     color += material.coef[0] * lightColor;
     
-//    if (block==NULL) {
+    if (block==NULL) {
         // diffuse component  => kd*(li* (N dot L))
         color += material.coef[1] * lightColor * (normal * towardLight.d);
         // specular component  => ks*(li*((N dot H) ^ exp), H=L+V
         vec3 h = (towardLight.d - ray.d).normalize();
         double exp = material.exp;
         color += material.coef[2] * lightColor * pow((normal*h), exp);
-//    }
+    }
 
 
 	color[0] *= material.rgb[0];
@@ -166,8 +180,8 @@ int main()
     vector<Material> materials;
     
     // Read from file
-    ifstream file ("triangle.txt");
-//    ifstream file ("Input_Suzanne.txt");
+//    ifstream file ("triangle.txt");
+    ifstream file ("Input_Suzanne.txt");
 //    ifstream file ("Input_Bunny.txt");
     if(file.is_open())
     {
@@ -269,7 +283,7 @@ int main()
 
             vec3 illumination(0, 0, 0);
             // raytracing with triangle
-            illumination = RayTracing(mainTriangles, ray, materials, lightpos, lightColor, 20); // reflection for 20 times
+            illumination = RayTracing(mainTriangles, ray, materials, lightpos, lightColor, 1); // reflection for 20 times
             color.back().push_back(illumination*255);
             
         }
