@@ -66,7 +66,7 @@ public:
         
         // y axis
         y = minpoint[1];
-        t = (x-ray.o[0])/ray.d[0];
+        t = (x-ray.o[1])/ray.d[1];
         x = ray.o[0] + t * ray.d[0];
         z = ray.o[2] + t * ray.d[2];
         if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[2] && z <= maxpoint[2]) {
@@ -79,7 +79,7 @@ public:
         }
 
         y = maxpoint[1];
-        t = (x-ray.o[0])/ray.d[0];
+        t = (x-ray.o[1])/ray.d[1];
         x = ray.o[0] + t * ray.d[0];
         z = ray.o[2] + t * ray.d[2];
         if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[2] && z <= maxpoint[2]) {
@@ -93,7 +93,7 @@ public:
         
         // z axis
         z = minpoint[2];
-        t = (x-ray.o[0])/ray.d[0];
+        t = (x-ray.o[2])/ray.d[2];
         x = ray.o[0] + t * ray.d[0];
         y = ray.o[1] + t * ray.d[1];
         if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[1] && z <= maxpoint[1]) {
@@ -106,7 +106,7 @@ public:
         }
         
         z = maxpoint[2];
-        t = (x-ray.o[0])/ray.d[0];
+        t = (x-ray.o[2])/ray.d[2];
         x = ray.o[0] + t * ray.d[0];
         y = ray.o[1] + t * ray.d[1];
         if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[1] && z <= maxpoint[1]) {
