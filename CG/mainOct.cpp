@@ -39,10 +39,7 @@ Triangle * hit(OctNode*node, Ray &ray) {
 		for (int i = 0; i < OCTDIRECTION; i++) {
 			if (node->eightDirection[i] != NULL) {
 				float dist = node->eightDirection[i]->bbox.isIntersect(ray);
-				if (node->eightDirection[i]->bbox.isInSphere(ray.o)) {
-					hitpair.push_back(make_pair(0.0f, i));
-				}
-				else if (dist > 0) {
+				if (dist > 0) {
 					hitpair.push_back(make_pair(dist, i));
 				}
 			}
@@ -235,7 +232,7 @@ int main()
     
     OctNode * mainTriangles = new OctNode();
 	cout << triangles.size() << endl;
-    mainTriangles = mainTriangles->bulid(triangles, 0);
+    mainTriangles = mainTriangles->build(triangles, 0);
 	cout << "Build finish time "<< float(clock() - begin_time) / CLOCKS_PER_SEC  << endl;
     // pixel color for height * width
     vector<vector<vec3>> color;

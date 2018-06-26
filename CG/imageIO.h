@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-
+#include <string>
 #ifndef _IMAGEIO_H
 #define _IMAGEIO_H
 
@@ -19,7 +19,7 @@ public:
     void clear(Pixel background);
     Pixel readPixel(int x, int y);
     void writePixel(int x, int y, Pixel p);
-    void outputPPM(char *filename);
+    void outputPPM(std::string filename);
 };
 
 ColorImage::ColorImage()
@@ -62,9 +62,12 @@ void ColorImage::writePixel(int x, int y, Pixel p)
     pPixel[x + y*xRes] = p;
 }
 
-void ColorImage::outputPPM(char *filename)
+void ColorImage::outputPPM(std::string filename)
 {
-    FILE *outFile = fopen(filename, "wb");
+    std::string temp = filename;
+    char * file = new char [temp.length()+1];
+    strcpy (file, temp.c_str());
+    FILE *outFile = fopen(file, "wb");
     
     assert(outFile); // die if file can't be opened
     

@@ -45,8 +45,11 @@ public:
             if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3])
             {
                 hit = true;
-                if (t < mindis) {
-                    mindis = t;
+                float dis = sqrt((ray.o[i]-minpoint[i])*(ray.o[i]-minpoint[i])+
+                                 (ray.o[(i+1)%3]-p1)*(ray.o[(i+1)%3]-p1)+
+                                 (ray.o[(i+2)%3]-p2)*(ray.o[(i+2)%3]-p2));
+                if (dis < mindis) {
+                    mindis = dis;
                 }
             }
         }
@@ -56,10 +59,14 @@ public:
             float p1 = ray.o[(i + 1) % 3] + t * ray.d[(i + 1) % 3];
             float p2 = ray.o[(i + 2) % 3] + t * ray.d[(i + 2) % 3];
             
-            if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3]) {
+            if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3])
+            {
                 hit = true;
-                if (t < mindis) {
-                  mindis = t;
+                float dis = sqrt((ray.o[i]-minpoint[i])*(ray.o[i]-minpoint[i])+
+                                 (ray.o[(i+1)%3]-p1)*(ray.o[(i+1)%3]-p1)+
+                                 (ray.o[(i+2)%3]-p2)*(ray.o[(i+2)%3]-p2));
+                if (dis < mindis) {
+                    mindis = dis;
                 }
             }
         }

@@ -8,15 +8,16 @@
 
 #include <vector>
 #include <cmath>
+#include "BoundingBox.h"
 #include "Triangles.h"
+#include "KDnode.h"
 
 #ifndef OctNode_h
 #define OctNode_h
 
 int const OCTDIRECTION = 8;
-using namespace std;
 
-Sphere getBoundingSphere(const vector<Triangle> &tri)
+Sphere getBoundingSphere(const std::vector<Triangle> &tri)
 {
 	vec3 centerpoint(0, 0, 0);
 	for (int i = 0; i < tri.size(); ++i) {
@@ -38,13 +39,13 @@ Sphere getBoundingSphere(const vector<Triangle> &tri)
 
 class OctNode {
 public:
-    Sphere bbox;
+    BoundingBox bbox;
 	OctNode * eightDirection[8];
-    vector<Triangle> triangles;
+    std::vector<Triangle> triangles;
     
     OctNode() {}
     
-    OctNode * build(vector<Triangle> &tris, int depth)
+    OctNode * build(std::vector<Triangle> &tris, int depth)
     {
 		//cout << "depth: " << depth << endl;
 		if (tris.size() == 0) return NULL;
@@ -57,15 +58,15 @@ public:
         }
         
 		// get a bounding box surrounding all the triangles
-		node->bbox = getBoundingSphere(tris);
+        node->bbox = getBoundingBox(tris);
 
 		if (tris.size() < 100) {
 			return node;
 		}
 		
-		vector<vector<Triangle>> alldirectionTree(OCTDIRECTION);
+		std::vector<std::vector<Triangle>> alldirectionTree(OCTDIRECTION);
         
-		vec3 centerpoint = node->bbox.getCenter();
+        vec3 centerpoint = node->bbox.getCenter();
 
 		//// up left front
 		//for (int i = 0; i < tris.size(); ++i) {

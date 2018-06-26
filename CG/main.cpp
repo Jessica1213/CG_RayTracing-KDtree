@@ -277,7 +277,8 @@ int main()
     }
     
 //    image.outputPPM("KDtree bunny shadow 256.ppm");
-    image.outputPPM("KDtree monkey shadow 256.ppm");
+//    image.outputPPM("KDtree monkey 256 3pcheck "+to_string(DIVIDNUM)+".ppm");
+    image.outputPPM("KDtree monkey 256 center "+to_string(DIVIDNUM)+".ppm");
     std::cout << float(clock() - begin_time) / CLOCKS_PER_SEC << endl;
 //    system("pause");
 	return 0;

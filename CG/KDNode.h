@@ -14,8 +14,8 @@
 #define KDNode_h
 
 int const CHILDNUM = 2;
-
-BoundingBox getBoundingBox(vector<Triangle> &tri)
+int const DIVIDNUM = 50;
+BoundingBox getBoundingBox(std::vector<Triangle> &tri)
 {
     vec3 centerpoint(0, 0, 0);
     float minX = 1e9, maxX = 1e-9;
@@ -45,11 +45,11 @@ class KDNode {
 public:
     BoundingBox bbox;
     KDNode * child[2];
-    vector<Triangle> triangles;
+    std::vector<Triangle> triangles;
     
     KDNode() {}
     
-    KDNode * build(vector<Triangle> &tris, int depth) {
+    KDNode * build(std::vector<Triangle> &tris, int depth) {
         if (tris.size() == 0) return NULL;
 
         KDNode * node  = new KDNode();
@@ -61,12 +61,12 @@ public:
         // get a bounding box surrounding all the triangles
         node->bbox = getBoundingBox(tris);
         
-        if (node->triangles.size() < 5) {
+        if (node->triangles.size() < DIVIDNUM) {
             return node;
         }
         
-        vector<Triangle> leftTree;
-        vector<Triangle> rightTree;
+        std::vector<Triangle> leftTree;
+        std::vector<Triangle> rightTree;
         
         vec3 centerpoint = node->bbox.getCenter();
         
@@ -79,8 +79,22 @@ public:
             else if (centerpoint[axis] <= tris[i].center[axis]) {
                 rightTree.push_back(tris[i]);
             }
-            
+//            for (int j = 0; j < 3; ++j) {
+//                if(tris[i].points[j][axis] >= centerpoint[axis]){
+//                    rightTree.push_back(tris[i]);
+//                    break;
+//                }
+//            }
+//            for (int j = 0; j < 3; ++j) {
+//                if(tris[i].points[j][axis] <= centerpoint[axis]){
+//                    leftTree.push_back(tris[i]);
+//                    break;
+//                }
+//            }
         }
+//        if(rightTree.size() == node->triangles.size() || leftTree.size() == node->triangles.size()){
+//            return node;
+//        }
 
         // recursive build tree
         node->child[0] = build(leftTree, depth + 1);
