@@ -27,8 +27,8 @@ BoundingBox getBoundingBox(vector<Triangle> &tri)
             maxY = MAX(maxY, tri[i].points[j][1]);
             maxZ = MAX(maxZ, tri[i].points[j][2]);
             minX = MIN(minX, tri[i].points[j][0]);
-            minY = MIN(minX, tri[i].points[j][1]);
-            minY = MIN(minX, tri[i].points[j][2]);
+            minY = MIN(minY, tri[i].points[j][1]);
+            minZ = MIN(minZ, tri[i].points[j][2]);
         }
         centerpoint += tri[i].center;
     }
@@ -61,8 +61,7 @@ public:
         // get a bounding box surrounding all the triangles
         node->bbox = getBoundingBox(tris);
         
-        if (node->triangles.size() <= 100) {
-            std::cout << node->triangles.size() << std::endl;
+        if (node->triangles.size() < 5) {
             return node;
         }
         
@@ -74,28 +73,19 @@ public:
         int axis = node->bbox.getLongestAxis();
         
         for (int i = 0; i < tris.size(); ++i) {
-            for (int j = 0; j < 3; j++) {
-                if (tris[i].points[j][axis] <= centerpoint[axis]) {
-                    leftTree.push_back(tris[i]);
-                    break;
-                }
+            if (centerpoint[axis] >= tris[i].center[axis]) {
+                leftTree.push_back(tris[i]);
             }
-            for (int j = 0; j < 3; j++) {
-                if(tris[i].points[j][axis] >= centerpoint[axis]) {
-                    rightTree.push_back(tris[i]);
-                    break;
-                }
+            else if (centerpoint[axis] <= tris[i].center[axis]) {
+                rightTree.push_back(tris[i]);
             }
+            
         }
 
         // recursive build tree
-        if (rightTree.size() == node->triangles.size() ||  leftTree.size() == node->triangles.size()){
-            return node;
-        }
-        else {
-            node->child[0] = build(leftTree, depth + 1);
-            node->child[1] = build(rightTree, depth + 1);
-        }
+        node->child[0] = build(leftTree, depth + 1);
+        node->child[1] = build(rightTree, depth + 1);
+
         return node;
             
     }

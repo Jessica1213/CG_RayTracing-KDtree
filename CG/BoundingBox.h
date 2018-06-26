@@ -37,88 +37,33 @@ public:
         float mindis = 1e9;
         bool hit = false;
     
-        float x = minpoint[0];
-        float t = (x-ray.o[0])/ray.d[0];
-        float y = ray.o[1] + t * ray.d[1];
-        float z = ray.o[2] + t * ray.d[2];
-        if (y >= minpoint[1] && y <= maxpoint[1] && z >= minpoint[2] && z <= maxpoint[2]) {
-            hit = true;
-            vec3 hitpoint(x, y, z);
-            float dis = (hitpoint-ray.o).length();
-            if (dis < mindis) {
-                mindis = dis;
-            }
-        }
-        
-        x = maxpoint[0];
-        t = (x-ray.o[0])/ray.d[0];
-        y = ray.o[1] + t * ray.d[1];
-        z = ray.o[2] + t * ray.d[2];
-        if (y >= minpoint[1] && y <= maxpoint[1] && z >= minpoint[2] && z <= maxpoint[2]) {
-            hit = true;
-            vec3 hitpoint(x, y, z);
-            float dis = (hitpoint-ray.o).length();
-            if (dis < mindis) {
-                mindis = dis;
-            }
-        }
-        
-        
-        // y axis
-        y = minpoint[1];
-        t = (x-ray.o[1])/ray.d[1];
-        x = ray.o[0] + t * ray.d[0];
-        z = ray.o[2] + t * ray.d[2];
-        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[2] && z <= maxpoint[2]) {
-            hit = true;
-            vec3 hitpoint(x, y, z);
-            float dis = (hitpoint-ray.o).length();
-            if (dis < mindis) {
-                mindis = dis;
-            }
-        }
-
-        y = maxpoint[1];
-        t = (x-ray.o[1])/ray.d[1];
-        x = ray.o[0] + t * ray.d[0];
-        z = ray.o[2] + t * ray.d[2];
-        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[2] && z <= maxpoint[2]) {
-            hit = true;
-            vec3 hitpoint(x, y, z);
-            float dis = (hitpoint-ray.o).length();
-            if (dis < mindis) {
-                mindis = dis;
-            }
-        }
-        
-        // z axis
-        z = minpoint[2];
-        t = (x-ray.o[2])/ray.d[2];
-        x = ray.o[0] + t * ray.d[0];
-        y = ray.o[1] + t * ray.d[1];
-        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[1] && z <= maxpoint[1]) {
-            hit = true;
-            vec3 hitpoint(x, y, z);
-            float dis = (hitpoint-ray.o).length();
-            if (dis < mindis) {
-                mindis = dis;
-            }
-        }
-        
-        z = maxpoint[2];
-        t = (x-ray.o[2])/ray.d[2];
-        x = ray.o[0] + t * ray.d[0];
-        y = ray.o[1] + t * ray.d[1];
-        if (x >= minpoint[0] && x <= maxpoint[0] && z >= minpoint[1] && z <= maxpoint[1]) {
-            hit = true;
-            vec3 hitpoint(x, y, z);
-            float dis = (hitpoint-ray.o).length();
-            if (dis < mindis) {
-                mindis = dis;
-            }
+        for (int i = 0; i < 3; i++) {
+            float t = (minpoint[i]-ray.o[i])/ray.d[i];
+            float p1 = ray.o[(i + 1) % 3] + t * ray.d[(i + 1) % 3];
+            float p2 = ray.o[(i + 2) % 3] + t * ray.d[(i + 2) % 3];
             
+            if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3])
+            {
+                hit = true;
+                if (t < mindis) {
+                    mindis = t;
+                }
+            }
         }
-        std::cout << hit << std::endl;
+        
+        for (int i = 0; i < 3; i++) {
+            float t = (maxpoint[i]-ray.o[i])/ray.d[i];
+            float p1 = ray.o[(i + 1) % 3] + t * ray.d[(i + 1) % 3];
+            float p2 = ray.o[(i + 2) % 3] + t * ray.d[(i + 2) % 3];
+            
+            if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3]) {
+                hit = true;
+                if (t < mindis) {
+                  mindis = t;
+                }
+            }
+        }
+        
         if(hit) return mindis;
         else return -1;
     }

@@ -47,6 +47,7 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
                 }
             }
         }
+        
         // leaf node
         if (hitpair.size() == 0) {
             float distance = 1e9;
@@ -60,6 +61,7 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
             }
             return nearestTriangle;
         }
+        
         else {
             if(hitpair.size() > 1) {
                 sort(begin(hitpair), end(hitpair));
@@ -67,7 +69,7 @@ Triangle * hit(KDNode *node, Ray &ray, int dep) {
             
             for (int i = 0; i < hitpair.size(); i++) {
                 int index = hitpair[i].second;
-                Triangle * result = hit(node->child[index], ray, dep+1);
+                Triangle * result = hit(node->child[index], ray, dep + 1);
                 if (result) {
                     return result;
                 }
@@ -257,7 +259,7 @@ int main()
 
             vec3 illumination(0, 0, 0);
             // raytracing with triangle
-            illumination = RayTracing(mainTriangles, ray, materials, lightpos, lightColor, 1); // reflection for 20 times
+            illumination = RayTracing(mainTriangles, ray, materials, lightpos, lightColor, 20); // reflection for 20 times
             color.back().push_back(illumination*255);
             
         }
