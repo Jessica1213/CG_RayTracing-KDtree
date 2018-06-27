@@ -16,9 +16,17 @@ public:
     vec3 minpoint;
     vec3 maxpoint;
     vec3 centerpoint;
+    int longestAxis;
     
     BoundingBox (){}
-    BoundingBox (vec3 minp, vec3 maxp, vec3 center) : minpoint(minp), maxpoint(maxp), centerpoint(center) {}
+    BoundingBox (vec3 minp, vec3 maxp, vec3 center) : minpoint(minp), maxpoint(maxp), centerpoint(center) {
+        float length = maxpoint[0] - minpoint[0];
+        float width = maxpoint[1] - minpoint[1];
+        float height = maxpoint[2] - minpoint[2];
+        if (length > width && length > height) longestAxis = 0;
+        else if(width > length && width > height) longestAxis = 1;
+        else longestAxis = 2;
+    }
     
     vec3 getCenter() { return centerpoint; }
     

@@ -67,7 +67,8 @@ public:
         node->child[1] = NULL;
         // get a bounding box surrounding all the triangles
         node->bbox = getBoundingBox(tris);
-        int axis = getLongestAxis(node->bbox);
+        //int axis = getLongestAxis(node->bbox);
+        int axis = node->bbox.longestAxis;
         
         std::cout << depth << " ===== " << node->triangles.size() << " --- " << axis << std::endl;
         if (node->triangles.size() < DIVIDNUM) {
