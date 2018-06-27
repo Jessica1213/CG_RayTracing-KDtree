@@ -129,7 +129,7 @@ vec3 RayTracing(KDNode *node, Ray &ray, vector<Material> &materials, vec3 &light
 
 	// ===== reflect =====
 	vec3 reflectDirection = (ray.d - 2 * (ray.d* normal) * normal).normalize();
-	Ray reflectionRay(intersectPoint + normal*1e-5, reflectDirection);
+    Ray reflectionRay(intersectPoint + normal*1e-5, reflectDirection);
 
 	vec3 reflectColor = RayTracing(node, reflectionRay, materials, lightpos, lightColor, depth - 1);
 	color = (1.0f - materials[materialindex].reflect) * color + materials[materialindex].reflect * reflectColor;
@@ -158,7 +158,12 @@ int main()
     // Read from file
 //    ifstream file ("triangle.txt");
     ifstream file ("Input_Suzanne.txt");
+    string filename = "KDtree monkey 256 center "+to_string(DIVIDNUM)+" time";
+//    string filename = "KDtree monkey 256 3pcheck "+to_string(DIVIDNUM)+" time";
+    
 //    ifstream file ("Input_Bunny.txt");
+//    string filename = "KDtree bunny 256 center "+to_string(DIVIDNUM)+" time";
+//    string filename = "KDtree bunny 256 3pcheck "+to_string(DIVIDNUM)+" time";
     if(file.is_open())
     {
         while(!file.eof()) {
@@ -275,11 +280,15 @@ int main()
             image.writePixel(x, y, rgb);
         }
     }
-    
-//    image.outputPPM("KDtree bunny shadow 256.ppm");
-//    image.outputPPM("KDtree monkey 256 3pcheck "+to_string(DIVIDNUM)+".ppm");
-    image.outputPPM("KDtree monkey 256 center "+to_string(DIVIDNUM)+".ppm");
+    int time = float(clock() - begin_time) / CLOCKS_PER_SEC;
+    filename += to_string(time) +".ppm";
+//    image.outputPPM("KDtree bunny 256 center "+to_string(DIVIDNUM)+" time"+to_string(time)+".ppm");
+//    image.outputPPM("KDtree bunny 256 3pcheck "+to_string(DIVIDNUM)+" time"+to_string(time)+".ppm");
+//    image.outputPPM("KDtree monkey 256 3pcheck "+to_string(DIVIDNUM)+" time"+to_string(time)+".ppm");
+//    image.outputPPM("KDtree monkey 256 center "+to_string(DIVIDNUM)+" time"+to_string(time)+".ppm");
+    image.outputPPM(filename);
     std::cout << float(clock() - begin_time) / CLOCKS_PER_SEC << endl;
 //    system("pause");
 	return 0;
 }
+

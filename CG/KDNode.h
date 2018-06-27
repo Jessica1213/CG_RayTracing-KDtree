@@ -33,13 +33,21 @@ BoundingBox getBoundingBox(std::vector<Triangle> &tri)
         centerpoint += tri[i].center;
     }
     centerpoint /= tri.size();
-    
     vec3 minp(minX, minY, minZ);
     vec3 maxp(maxX, maxY, maxZ);
     BoundingBox bbox(minp, maxp, centerpoint);
     return bbox;
 }
 
+int getLongestAxis(BoundingBox bbox)
+{
+    float length = bbox.maxpoint[0] - bbox.minpoint[0];
+    float width = bbox.maxpoint[1] - bbox.minpoint[1];
+    float height = bbox.maxpoint[2] - bbox.minpoint[2];
+    if (length > width && length > height) return 0;
+    else if(width > length && width > height)  return 1;
+    else return 2;
+}
 
 class KDNode {
 public:
@@ -57,10 +65,11 @@ public:
         
         node->child[0] = NULL;
         node->child[1] = NULL;
-        std::cout << depth << " ===== " << node->triangles.size() << " --- " <<node->bbox.getLongestAxis() << std::endl;
         // get a bounding box surrounding all the triangles
         node->bbox = getBoundingBox(tris);
+        int axis = getLongestAxis(node->bbox);
         
+        std::cout << depth << " ===== " << node->triangles.size() << " --- " << axis << std::endl;
         if (node->triangles.size() < DIVIDNUM) {
             return node;
         }
@@ -69,8 +78,6 @@ public:
         std::vector<Triangle> rightTree;
         
         vec3 centerpoint = node->bbox.getCenter();
-        
-        int axis = node->bbox.getLongestAxis();
         
         for (int i = 0; i < tris.size(); ++i) {
             if (centerpoint[axis] >= tris[i].center[axis]) {
@@ -92,6 +99,7 @@ public:
 //                }
 //            }
         }
+        
 //        if(rightTree.size() == node->triangles.size() || leftTree.size() == node->triangles.size()){
 //            return node;
 //        }

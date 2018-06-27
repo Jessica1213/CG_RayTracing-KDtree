@@ -22,16 +22,6 @@ public:
     
     vec3 getCenter() { return centerpoint; }
     
-    int getLongestAxis()
-    {
-        float length = maxpoint[0]-minpoint[0];
-        float width = maxpoint[1]-minpoint[1];
-        float height = maxpoint[2]-minpoint[2];
-        if(length>width && length>height) return 0;
-        else if(width>length && width>height)  return 1;
-        else return 2;
-    }
-    
     float isIntersect(Ray ray) {
         // x axis
         float mindis = 1e9;
@@ -45,9 +35,9 @@ public:
             if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3])
             {
                 hit = true;
-                float dis = sqrt((ray.o[i]-minpoint[i])*(ray.o[i]-minpoint[i])+
-                                 (ray.o[(i+1)%3]-p1)*(ray.o[(i+1)%3]-p1)+
-                                 (ray.o[(i+2)%3]-p2)*(ray.o[(i+2)%3]-p2));
+                float dis = sqrt((t * ray.d[i])*(t * ray.d[i])+
+                                 (t * ray.d[(i+1)%3])*(t * ray.d[(i+1)%3])+
+                                 (t * ray.d[(i+2)%3])*(t * ray.d[(i+1)%3]));
                 if (dis < mindis) {
                     mindis = dis;
                 }
@@ -62,9 +52,9 @@ public:
             if (p1 >= minpoint[(i + 1) % 3] && p1 <= maxpoint[(i + 1) % 3] && p2 >= minpoint[(i + 2) % 3] && p2 <= maxpoint[(i + 2) % 3])
             {
                 hit = true;
-                float dis = sqrt((ray.o[i]-minpoint[i])*(ray.o[i]-minpoint[i])+
-                                 (ray.o[(i+1)%3]-p1)*(ray.o[(i+1)%3]-p1)+
-                                 (ray.o[(i+2)%3]-p2)*(ray.o[(i+2)%3]-p2));
+                float dis = sqrt((t * ray.d[i])*(t * ray.d[i])+
+                                 (t * ray.d[(i+1)%3])*(t * ray.d[(i+1)%3])+
+                                 (t * ray.d[(i+2)%3])*(t * ray.d[(i+1)%3]));
                 if (dis < mindis) {
                     mindis = dis;
                 }
