@@ -157,12 +157,12 @@ int main()
     
     // Read from file
 //    ifstream file ("triangle.txt");
-    ifstream file ("Input_Suzanne.txt");
-    string filename = "KDtree monkey 256 center "+to_string(DIVIDNUM)+" time";
+//    ifstream file ("Input_Suzanne.txt");
+//    string filename = "KDtree monkey 256 center "+to_string(DIVIDNUM)+" time";
 //    string filename = "KDtree monkey 256 3pcheck "+to_string(DIVIDNUM)+" time";
     
-//    ifstream file ("Input_Bunny.txt");
-//    string filename = "KDtree bunny 256 center "+to_string(DIVIDNUM)+" time";
+    ifstream file ("Input_Bunny.txt");
+    string filename = "KDtree bunny 256 center "+to_string(DIVIDNUM)+" time";
 //    string filename = "KDtree bunny 256 3pcheck "+to_string(DIVIDNUM)+" time";
     if(file.is_open())
     {
@@ -245,6 +245,7 @@ int main()
     KDNode * mainTriangles = new KDNode();
 	cout << "===" << triangles.size() <<  "===" << endl;
     mainTriangles = mainTriangles->build(triangles, 0);
+    filename += to_string(float(clock() - begin_time) / CLOCKS_PER_SEC );
 	cout << "Build finish time "<< float(clock() - begin_time) / CLOCKS_PER_SEC  << endl;
     // pixel color for height * width
     vector<vector<vec3>> color;
@@ -264,7 +265,7 @@ int main()
 
             vec3 illumination(0, 0, 0);
             // raytracing with triangle
-            illumination = RayTracing(mainTriangles, ray, materials, lightpos, lightColor, 20); // reflection for 20 times
+            illumination = RayTracing(mainTriangles, ray, materials, lightpos, lightColor, 1); // reflection for 20 times
             color.back().push_back(illumination*255);
             
         }
@@ -280,7 +281,8 @@ int main()
             image.writePixel(x, y, rgb);
         }
     }
-    int time = float(clock() - begin_time) / CLOCKS_PER_SEC;
+    float time = float(clock() - begin_time) / CLOCKS_PER_SEC;
+    filename += " ";
     filename += to_string(time) +".ppm";
 //    image.outputPPM("KDtree bunny 256 center "+to_string(DIVIDNUM)+" time"+to_string(time)+".ppm");
 //    image.outputPPM("KDtree bunny 256 3pcheck "+to_string(DIVIDNUM)+" time"+to_string(time)+".ppm");

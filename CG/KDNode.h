@@ -101,9 +101,9 @@ public:
 //            }
         }
         
-//        if(rightTree.size() == node->triangles.size() || leftTree.size() == node->triangles.size()){
-//            return node;
-//        }
+        if(rightTree.size() == node->triangles.size() || leftTree.size() == node->triangles.size()){
+            return node;
+        }
 
         // recursive build tree
         node->child[0] = build(leftTree, depth + 1);
